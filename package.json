@@ -1,0 +1,18 @@
+{
+  "name": "react-kma",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:grebenyuksv/react-kma.git",
+  "author": "Sergii Grebeniuk <sergii.g@preply.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "babel src -d dist --watch",
+    "build": "babel src -d dist"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-transform-react-jsx": "^7.0.0"
+  }
+}

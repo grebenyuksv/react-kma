@@ -1,4 +1,4 @@
-ReactDOM.render(
+const ChangePasswordForm = () => (
 	<form action="http://localhost:8081/change-password" method="POST">
 		<h1>Change Your Password</h1>
 		<div>
@@ -14,6 +14,7 @@ ReactDOM.render(
 			<input type="password" name="confirmNewPassword" id="confirmNewPassword" />
 		</div>
 		<button type="submit">submit</button>
-	</form>,
-	document.body
+	</form>
 );
+
+ReactDOM.render(<ChangePasswordForm />, document.body);

@@ -1,16 +1,40 @@
 class ChangePasswordForm extends React.Component {
 	state = {
-		currentPassword: '',
-		newPassword: '',
-		confirmNewPassword: '',
+		currentPassword: "",
+		newPassword: "",
+		confirmNewPassword: "",
+		currentPasswordCheckResult: null
+	};
+	onSubmit = e => {
+		e.preventDefault();
+		fetch("http://localhost:8081/change-password", {
+			method: "POST",
+			body: new URLSearchParams([...new FormData(e.target).entries()])
+		}).then(response => {
+			const { ok } = response;
+			response.text().then(text => {
+				this.setState({
+					currentPasswordCheckResult: {
+						ok,
+						text
+					}
+				});
+			});
+		});
 	};
 	onChangeInput = e => {
 		const { target } = e;
 		const { id, value } = target;
-		this.setState({ [id]: value });
+		this.setState({ [id]: value, currentPasswordCheckResult: null });
 	};
 	render() {
-		const { currentPassword, newPassword, confirmNewPassword } = this.state;
+		const {
+			currentPassword,
+			newPassword,
+			confirmNewPassword,
+			currentPasswordCheckResult
+		} = this.state;
+		const successes = [];
 		const errors = [];
 		if (newPassword) {
 			const minLength = 8;
@@ -20,17 +44,22 @@ class ChangePasswordForm extends React.Component {
 				);
 			}
 			if (!newPassword.match(/[a-z]/) || !newPassword.match(/[A-Z]/)) {
-				errors.push('The password must contain both cases');
+				errors.push("The password must contain both cases");
 			}
 			if (!newPassword.match(/\d/)) {
-				errors.push('The password must contain digits');
+				errors.push("The password must contain digits");
 			}
 			if (confirmNewPassword !== newPassword) {
 				errors.push(`Passwords don't match`);
 			}
 		}
+		if (currentPasswordCheckResult) {
+			(currentPasswordCheckResult.ok ? successes : errors).push(
+				currentPasswordCheckResult.text
+			);
+		}
 		return (
-			<form action="http://localhost:8081/change-password" method="POST">
+			<form onSubmit={this.onSubmit}>
 				<h1>Change Your Password</h1>
 				<div>
 					<label htmlFor="currentPassword">Current Password:</label>
@@ -64,10 +93,17 @@ class ChangePasswordForm extends React.Component {
 						id="confirmNewPassword"
 					/>
 				</div>
+				{successes.map(success => (
+					<p className="success" key={success}>
+						{success}
+					</p>
+				))}
 				{errors.map(error => <p key={error}>{error}</p>)}
 				<button
 					type="submit"
-					disabled={!newPassword || errors.length > 0}
+					disabled={
+						!currentPassword || !newPassword || errors.length > 0
+					}
 				>
 					submit
 				</button>
